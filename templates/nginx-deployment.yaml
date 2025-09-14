@@ -1,0 +1,84 @@
+{{- if .Values.nginx.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "loyalty-platform-v1.fullname" . }}-nginx
+  labels:
+    app.kubernetes.io/component: nginx
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+    {{- include "loyalty-platform-v1.labels" . | nindent 4 }}
+  {{- with .Values.nginx.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.nginx.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: nginx
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ .Release.Name }}
+  strategy:
+    {{- toYaml .Values.nginx.strategy | nindent 4 }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: nginx
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ .Release.Name }}
+      {{- with .Values.nginx.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.nginx.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: nginx
+          image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          {{- if .Values.nginx.livenessProbe }}
+          livenessProbe:
+            {{- toYaml .Values.nginx.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.nginx.readinessProbe }}
+          readinessProbe:
+            {{- toYaml .Values.nginx.readinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.nginx.resources }}
+          resources:
+            {{- toYaml .Values.nginx.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.nginx.persistence.enabled }}
+          volumeMounts:
+            - name: nginx-data
+              mountPath: {{ .Values.nginx.persistence.mountPath }}
+              {{- if .Values.nginx.persistence.subPath }}
+              subPath: {{ .Values.nginx.persistence.subPath }}
+              {{- end }}
+          {{- end }}
+      {{- with .Values.nginx.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nginx.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nginx.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.nginx.persistence.enabled }}
+      volumes:
+        - name: nginx-data
+          persistentVolumeClaim:
+            claimName: {{ include "loyalty-platform-v1.fullname" . }}-nginx-data
+      {{- end }}
+{{- end }}

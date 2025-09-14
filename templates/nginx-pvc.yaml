@@ -1,0 +1,21 @@
+{{- if and .Values.nginx.enabled .Values.nginx.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "loyalty-platform-v1.fullname" . }}-nginx-data
+  labels:
+    app.kubernetes.io/component: nginx
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+    {{- include "loyalty-platform-v1.labels" . | nindent 4 }}
+  {{- with .Values.nginx.persistence.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.nginx.persistence.accessMode | quote }}
+  storageClassName: {{ .Values.nginx.persistence.storageClass | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.nginx.persistence.size | quote }}
+{{- end }}

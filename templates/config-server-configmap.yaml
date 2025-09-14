@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "loyalty-platform-v1.fullname" . }}-config-server-env
+  namespace: {{ .Release.Namespace }}
+data:
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://{{ include "loyalty-platform-v1.postgresql.fullname" . }}:5432/{{ .Values.postgresql.auth.database }}"
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: "org.postgresql.Driver"
+  SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: "org.hibernate.dialect.PostgreSQLDialect"
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: "{{ .Release.Name }}-kafka:9092"
+  SPRING_KAFKA_PROPERTIES_BOOTSTRAP_SERVERS: "{{ .Release.Name }}-kafka:9092"
+  KAFKA_BOOTSTRAP_SERVERS: "{{ .Release.Name }}-kafka:9092"
+  SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS: "{{ .Release.Name }}-kafka:9092"

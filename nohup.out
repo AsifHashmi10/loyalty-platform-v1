@@ -1,0 +1,34 @@
+Unable to listen on port 9092: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:9092: bind: address already in use unable to create listener: Error listen tcp6 [::1]:9092: bind: address already in use]
+Forwarding from 127.0.0.1:8888 -> 8888
+Forwarding from [::1]:8888 -> 8888
+error: unable to listen on any of the requested ports: [{9092 9092}]
+Forwarding from 127.0.0.1:8080 -> 80
+Forwarding from [::1]:8080 -> 80
+Forwarding from 127.0.0.1:5432 -> 5432
+Forwarding from [::1]:5432 -> 5432
+Unable to listen on port 9092: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:9092: bind: address already in use unable to create listener: Error listen tcp6 [::1]:9092: bind: address already in use]
+error: unable to listen on any of the requested ports: [{9092 9092}]
+Unable to listen on port 8080: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:8080: bind: address already in use unable to create listener: Error listen tcp6 [::1]:8080: bind: address already in use]
+Unable to listen on port 5432: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:5432: bind: address already in use unable to create listener: Error listen tcp6 [::1]:5432: bind: address already in use]
+error: unable to listen on any of the requested ports: [{5432 5432}]
+error: unable to listen on any of the requested ports: [{8080 80}]
+Unable to listen on port 8888: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:8888: bind: address already in use unable to create listener: Error listen tcp6 [::1]:8888: bind: address already in use]
+error: unable to listen on any of the requested ports: [{8888 8888}]
+Unable to listen on port 5432: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:5432: bind: address already in use unable to create listener: Error listen tcp6 [::1]:5432: bind: address already in use]
+error: unable to listen on any of the requested ports: [{5432 5432}]
+Unable to listen on port 8080: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:8080: bind: address already in use unable to create listener: Error listen tcp6 [::1]:8080: bind: address already in use]
+error: unable to listen on any of the requested ports: [{8080 80}]
+Unable to listen on port 9092: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:9092: bind: address already in use unable to create listener: Error listen tcp6 [::1]:9092: bind: address already in use]
+error: unable to listen on any of the requested ports: [{9092 9092}]
+Unable to listen on port 8888: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:8888: bind: address already in use unable to create listener: Error listen tcp6 [::1]:8888: bind: address already in use]
+error: unable to listen on any of the requested ports: [{8888 8888}]
+Unable to listen on port 5432: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:5432: bind: address already in use unable to create listener: Error listen tcp6 [::1]:5432: bind: address already in use]
+Unable to listen on port 8888: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:8888: bind: address already in use unable to create listener: Error listen tcp6 [::1]:8888: bind: address already in use]
+error: unable to listen on any of the requested ports: [{8888 8888}]
+error: unable to listen on any of the requested ports: [{5432 5432}]
+Unable to listen on port 9092: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:9092: bind: address already in use unable to create listener: Error listen tcp6 [::1]:9092: bind: address already in use]
+error: unable to listen on any of the requested ports: [{9092 9092}]
+Unable to listen on port 8080: Listeners failed to create with the following errors: [unable to create listener: Error listen tcp4 127.0.0.1:8080: bind: address already in use unable to create listener: Error listen tcp6 [::1]:8080: bind: address already in use]
+error: unable to listen on any of the requested ports: [{8080 80}]
+Handling connection for 8888
+Handling connection for 5432

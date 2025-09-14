@@ -1,0 +1,12 @@
+# Helm Upgrade Command with Workarounds for Immutable Fields
+
+# Use this command to upgrade the Helm release
+helm upgrade --install loyalty-platform-v1 ./loyalty-platform-v1 -n loyalty-platform --force
+
+# Alternative approach if the above doesn't work
+# This will delete the PostgreSQL StatefulSet first and then perform the upgrade
+# Note: This might cause data loss if not handled properly
+# kubectl delete statefulset loyalty-platform-v1-postgresql -n loyalty-platform --cascade=orphan
+# helm upgrade --install loyalty-platform-v1 ./loyalty-platform-v1 -n loyalty-platform
+
+# For production environments, consider backing up data before performing these operations

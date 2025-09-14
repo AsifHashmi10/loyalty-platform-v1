@@ -1,0 +1,261 @@
+# Zookeeper Configuration
+zookeeper:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    size: 1Gi
+  auth:
+    enabled: false
+
+# Kafka Configuration
+kafka:
+  enabled: true
+  replicaCount: 1
+  listeners:
+    client:
+      protocol: PLAINTEXT
+    interbroker:
+      protocol: PLAINTEXT
+  auth:
+    clientProtocol: PLAINTEXT
+    interBrokerProtocol: PLAINTEXT
+
+  zookeeper:
+    enabled: false  # disable internal Zookeeper
+    address: "{{ .Release.Name }}-zookeeper"  # use external dependency Zookeeper
+
+  persistence:
+    enabled: true
+    size: 1Gi
+  
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+# PostgreSQL Configuration
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: "admin123"
+    username: loyalty_user
+    password: loyalty_pass
+    database: loyaltydb
+  
+  primary:
+    persistence:
+      enabled: true
+      storageClass: "standard"
+      accessMode: ReadWriteOnce
+      size: 1Gi
+      annotations: {}
+    
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi
+    
+    podSecurityContext:
+      enabled: true
+      fsGroup: 1001
+    
+    containerSecurityContext:
+      enabled: true
+      runAsUser: 1001
+  
+  configuration: ""
+  pgHbaConfiguration: ""
+  
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  
+  # PostgreSQL NodePort Configuration (for external access)
+  nodePort:
+    enabled: false  # Set to true to enable external access
+    port: 30432     # NodePort number (30000-32767)
+  
+  # PostgreSQL Proxy Configuration (for secure external access)
+  proxy:
+    enabled: false  # Set to true to enable database proxy
+    image:
+      repository: postgres
+      tag: "15-alpine"
+
+# Config Server Configuration
+configServer:
+  enabled: true
+  replicaCount: 1
+  
+  annotations: {}
+  podAnnotations: {}
+  
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+      
+  ingress:
+    enabled: true
+    className: ""
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: localhost
+        paths:
+          - path: /config
+            pathType: Prefix
+    tls: []
+  
+  image:
+    repository: loyalty-config-server-app
+    tag: "latest"
+    pullPolicy: Never   # ?? Important: use local Minikube image
+  
+  imagePullSecrets: []
+  
+  env:
+    - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+      value: "loyalty-platform-v1-kafka:9092"
+    - name: SPRING_KAFKA_PROPERTIES_BOOTSTRAP_SERVERS
+      value: "loyalty-platform-v1-kafka:9092"
+    - name: KAFKA_BOOTSTRAP_SERVERS
+      value: "loyalty-platform-v1-kafka:9092"
+    - name: SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS
+      value: "loyalty-platform-v1-kafka:9092"
+    - name: SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS
+      value: "loyalty-platform-v1-kafka:9092"
+    - name: SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS
+      value: "loyalty-platform-v1-kafka:9092"
+  # - name: SPRING_PROFILES_ACTIVE
+  #   value: "prod"
+  # - name: SERVER_PORT
+  #   value: "8888"
+  
+  persistence:
+    enabled: false
+    storageClass: "standard"
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    mountPath: "/config"
+    subPath: ""
+    annotations: {}
+  
+  service:
+    type: ClusterIP
+    port: 8888
+    nodePort: null
+    annotations: {}
+  
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  
+  livenessProbe:
+    httpGet:
+      path: /actuator/health
+      port: http
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
+  
+  readinessProbe:
+    httpGet:
+      path: /actuator/health
+      port: http
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
+  
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+# NGINX Webserver Configuration
+nginx:
+  enabled: true
+  replicaCount: 1
+  
+  image:
+    repository: nginx
+    tag: "stable-alpine"
+    pullPolicy: IfNotPresent
+
+  imagePullSecrets: []
+  
+  ingress:
+    enabled: true
+    className: ""
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+
+  persistence:
+    enabled: true
+    storageClass: "standard"
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    mountPath: "/usr/share/nginx/html"
+    subPath: ""
+    annotations: {}
+
+  service:
+    type: ClusterIP
+    port: 80
+    nodePort: null
+    annotations: {}
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
+
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
+
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
