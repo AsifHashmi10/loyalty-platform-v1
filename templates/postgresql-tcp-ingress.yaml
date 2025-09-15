@@ -1,0 +1,28 @@
+{{- if .Values.postgresql.tcpIngress.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: ingress-nginx
+data:
+  "{{ .Values.postgresql.tcpIngress.port }}": "{{ .Release.Namespace }}/{{ include "loyalty-platform-v1.fullname" . }}-postgresql:5432"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "loyalty-platform-v1.fullname" . }}-postgresql-tcp
+  labels:
+    app.kubernetes.io/component: postgresql
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+    {{- include "loyalty-platform-v1.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+      name: postgresql
+  selector:
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

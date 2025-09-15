@@ -54,6 +54,10 @@ postgresql:
       size: 1Gi
       annotations: {}
     
+    service:
+      type: LoadBalancer
+      port: 5432
+    
     resources:
       limits:
         cpu: 500m
@@ -79,7 +83,7 @@ postgresql:
   
   # PostgreSQL NodePort Configuration (for external access)
   nodePort:
-    enabled: false  # Set to true to enable external access
+    enabled: true   # Set to true to enable external access
     port: 30432     # NodePort number (30000-32767)
   
   # PostgreSQL Proxy Configuration (for secure external access)
@@ -88,6 +92,11 @@ postgresql:
     image:
       repository: postgres
       tag: "15-alpine"
+  
+  # PostgreSQL TCP Ingress Configuration
+  tcpIngress:
+    enabled: false  # Set to true to enable TCP ingress
+    port: 5432      # External port for PostgreSQL
 
 # Config Server Configuration
 configServer:
@@ -110,7 +119,7 @@ configServer:
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
     hosts:
-      - host: localhost
+      - host: loyaltyplatform.dev
         paths:
           - path: /config
             pathType: Prefix
@@ -207,7 +216,7 @@ nginx:
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
     hosts:
-      - host: chart-example.local
+      - host: loyaltyplatform.dev
         paths:
           - path: /
             pathType: Prefix
