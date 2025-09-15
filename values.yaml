@@ -27,6 +27,9 @@ kafka:
 
   persistence:
     enabled: true
+    type: hostPath
+    hostPath: /mnt/data/kafka        # mapped from /home/wmfedora1/lp-minikube-data/kafka
+    mountPath: /bitnami/kafka
     size: 1Gi
   
   resources:
@@ -49,7 +52,9 @@ postgresql:
   primary:
     persistence:
       enabled: true
-      storageClass: "standard"
+      type: hostPath
+      hostPath: /mnt/data/postgres   # mapped from /home/wmfedora1/lp-minikube-data/postgres
+      mountPath: /bitnami/postgresql
       accessMode: ReadWriteOnce
       size: 1Gi
       annotations: {}
@@ -116,8 +121,6 @@ configServer:
     enabled: true
     className: ""
     annotations: {}
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
     hosts:
       - host: loyaltyplatform.dev
         paths:
@@ -128,7 +131,7 @@ configServer:
   image:
     repository: loyalty-config-server-app
     tag: "latest"
-    pullPolicy: Never   # ?? Important: use local Minikube image
+    pullPolicy: Never   # Important: use local Minikube image
   
   imagePullSecrets: []
   
@@ -145,18 +148,14 @@ configServer:
       value: "loyalty-platform-v1-kafka:9092"
     - name: SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS
       value: "loyalty-platform-v1-kafka:9092"
-  # - name: SPRING_PROFILES_ACTIVE
-  #   value: "prod"
-  # - name: SERVER_PORT
-  #   value: "8888"
   
   persistence:
-    enabled: false
-    storageClass: "standard"
+    enabled: true
+    type: hostPath
+    hostPath: /mnt/data/config-server   # mapped from /home/wmfedora1/lp-minikube-data/config-server
+    mountPath: /config
     accessMode: ReadWriteOnce
     size: 1Gi
-    mountPath: "/config"
-    subPath: ""
     annotations: {}
   
   service:
@@ -213,22 +212,20 @@ nginx:
     enabled: true
     className: ""
     annotations: {}
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
     hosts:
       - host: loyaltyplatform.dev
         paths:
-          - path: /
+          - path: /webserver
             pathType: Prefix
     tls: []
 
   persistence:
     enabled: true
-    storageClass: "standard"
+    type: hostPath
+    hostPath: /mnt/data/webserver      # mapped from /home/wmfedora1/lp-minikube-data/webserver
+    mountPath: /usr/share/nginx/html:Z
     accessMode: ReadWriteOnce
     size: 1Gi
-    mountPath: "/usr/share/nginx/html"
-    subPath: ""
     annotations: {}
 
   service:
