@@ -122,7 +122,7 @@ configServer:
     className: ""
     annotations: {}
     hosts:
-      - host: loyaltyplatform.dev
+      - host: loyaltyplatform.test
         paths:
           - path: /config
             pathType: Prefix
@@ -197,23 +197,25 @@ configServer:
   tolerations: []
 
 # NGINX Webserver Configuration
+# NGINX Webserver Configuration
 nginx:
   enabled: true
   replicaCount: 1
-  
+
   image:
     repository: nginx
     tag: "stable-alpine"
     pullPolicy: IfNotPresent
 
   imagePullSecrets: []
-  
+
   ingress:
     enabled: true
     className: ""
-    annotations: {}
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
     hosts:
-      - host: loyaltyplatform.dev
+      - host: loyaltyplatform.test
         paths:
           - path: /webserver
             pathType: Prefix
